@@ -2,7 +2,9 @@ A messy shader modification for Phantasy Star Online 2.
 
 ## Features
 1. To reduce banding artifacts ingame, colour dithering has been implemented. <br>Note that because many textures in PSO2 are stored in low quality and weren't changed with the engine upgrade, the surfaces of objects and skyboxes will still have visible banding.
-2. The emissive strength of some weapon shaders has been increased, allowing them to cast bloom lighting.
+2. Added a patch to the shader used for Mags to reimplement their emission. 
+3. The emissive strength of some weapon shaders has been increased, allowing them to cast bloom lighting.
+4. Added a scattering pattern to motion blur to make it look less stepped.
 
 ## Usage
 This relies on 3DMigoto to do the hard work.
@@ -21,7 +23,11 @@ Changes to the rendering engine in the future that affect shaders will cause the
 
 As PSO2 was only just upgraded to the new renderer, I'm hoping Sega will fix some of the bugs themselves.
 
-Most materials will start with a similar piece of code to do dithering when the camera is too close. This is also used for some types of transparency. 
+Transparent objects rendered after the normal deferred passes will fail to dump shaders. I think it's because the result is too big, as transparent objects have really really big shaders that try to calculate all the lighting for them. It seems kind of excessive, but for non-emissive objects it makes sense. At the same time, I think it might be a bottleneck for old GPUs...
+
+A number of passes, such as FXAA and TAA, are rendered after the final output is composited to sRGB space. 
+
+Most materials will start with a similar piece of code to do dithering when the camera is too close. This is also used for some types of transparency on items.
 
 The buffer layout opaque shaders write to seems to be like this. 
 * o0.xyz : Albedo
@@ -30,11 +36,11 @@ The buffer layout opaque shaders write to seems to be like this.
 * o1.y : Roughness
 * o1.z : If >0.5, the material is specular. Otherwise, it is metallic.
 * o1.w : Occlusion
-* o2.xyz : Normal
+* o2.xyz : Normals
 * o2.w : Unused
 * o3.xyz : Emission
 * o3.w : Unused
-* o4.xy: Screen-space blur factor
+* o4.xy: Screen-space blur factor (i.e. velocity for motion blur)
 * o4.zw : Unused
 
 Note that non-metallic objects have a specular colour of white.
