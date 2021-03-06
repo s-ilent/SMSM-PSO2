@@ -6,6 +6,10 @@ A messy shader modification for Phantasy Star Online 2.
 3. The emissive strength of some weapon shaders has been increased, allowing them to cast bloom lighting.
 4. Added a scattering pattern to motion blur to make it look less stepped.
 
+![Dithering](https://github.com/s-ilent/SMSM-PSO2/blob/main/.images/pso2_dither.png?raw=true)
+
+![Emission on Mags.](https://github.com/s-ilent/SMSM-PSO2/blob/main/.images/pso2_mags.png?raw=true)
+
 ## Usage
 This relies on 3DMigoto to do the hard work.
 1. Download and install 3DMigoto from <https://github.com/bo3b/3Dmigoto/releases>. 
