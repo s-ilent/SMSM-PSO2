@@ -6,21 +6,44 @@ A messy shader modification for Phantasy Star Online 2.
 3. The emissive strength of some weapon shaders has been increased, allowing them to cast bloom lighting.
 4. Added a scattering pattern to motion blur to make it look less stepped.
 
-![Dithering](https://github.com/s-ilent/SMSM-PSO2/blob/main/.images/pso2_dither.png?raw=true)
+![Dithering.](https://github.com/s-ilent/SMSM-PSO2/blob/main/.images/pso2_dither.png?raw=true)
+
+![More bloom.](https://github.com/s-ilent/SMSM-PSO2/blob/main/.images/pso2_bloom.png?raw=true)
 
 ![Emission on Mags.](https://github.com/s-ilent/SMSM-PSO2/blob/main/.images/pso2_mags.png?raw=true)
 
 ## Usage
 This relies on 3DMigoto to do the hard work.
 1. Download and install 3DMigoto from <https://github.com/bo3b/3Dmigoto/releases>. 
-2. 3DMigoto comes with 3 folders. Extract the contents of the `x64` folder next to `pso2.exe`, so they are in the same place. 
+2. 3DMigoto comes with 3 folders. Extract the contents of the `x64` folder next to `pso2.exe`, so the folder contents including DLLs are next to `pso2.exe`. 
 
 3DMigoto is a shader patching tool. By default, it is configured to let you hunt for shaders. <br>
-If you are not planning on doing modding yourself, disable the features in the included d3dx.ini. I recommend:
-1. Disable `hunting`, `calls`, and `input`.
-2. Enable `cache_shaders`.
+If you are not planning on doing modding yourself, disable the features in the included d3dx.ini.
+1. Disable `hunting`, `calls`, and `input` by setting them to 0.
+2. Enable `cache_shaders` by setting to 1.
 
 Finally, place the ShaderFixes folder from this repo next to `pso2.exe`, overwriting the folder created by 3DMigoto. 
+
+## Details
+You can use 3DMigoto to modify shaders yourself and adjust the output on your own. However, the compiled shader output is difficult to read.
+
+Most materials will start with a similar piece of code to do dithering when the camera is too close. This is also used for some types of transparency on items.
+
+To make things slightly easier, I've roughly identified the output buffers used by the main rendering shaders. The buffer layout opaque shaders write to seems to be like this. 
+* o0.xyz : Albedo
+* o0.w : Scene-dependant ambient power
+* o1.x : Metallic or specular intensity
+* o1.y : Roughness
+* o1.z : If >0.5, the material is specular. Otherwise, it is metallic. Note that non-metallic objects have a specular colour of white.
+* o1.w : Occlusion
+* o2.xyz : Normals
+* o2.w : Unused
+* o3.xyz : Emission
+* o3.w : Unused
+* o4.xy: Screen-space blur factor (i.e. velocity for motion blur)
+* o4.zw : Unused
+
+In the weapon shader provided, 69a6bb12b5eee518, the adjustment is applied with a single line that multiplies the output emission by 7. If you find other items that have emission that's too dull, you can try something similar on your own.
 
 ## Notes
 Changes to the rendering engine in the future that affect shaders will cause the affected shaders to have new hashes, which will result in the new versions not being patched. In that scenario, the patches will need to be redone.
@@ -30,24 +53,6 @@ As PSO2 was only just upgraded to the new renderer, I'm hoping Sega will fix som
 Transparent objects rendered after the normal deferred passes will fail to dump shaders. I think it's because the result is too big, as transparent objects have really really big shaders that try to calculate all the lighting for them. It seems kind of excessive, but for non-emissive objects it makes sense. At the same time, I think it might be a bottleneck for old GPUs...
 
 A number of passes, such as FXAA and TAA, are rendered after the final output is composited to sRGB space. 
-
-Most materials will start with a similar piece of code to do dithering when the camera is too close. This is also used for some types of transparency on items.
-
-The buffer layout opaque shaders write to seems to be like this. 
-* o0.xyz : Albedo
-* o0.w : Scene-dependant ambient power
-* o1.x : Metallic or specular intensity
-* o1.y : Roughness
-* o1.z : If >0.5, the material is specular. Otherwise, it is metallic.
-* o1.w : Occlusion
-* o2.xyz : Normals
-* o2.w : Unused
-* o3.xyz : Emission
-* o3.w : Unused
-* o4.xy: Screen-space blur factor (i.e. velocity for motion blur)
-* o4.zw : Unused
-
-Note that non-metallic objects have a specular colour of white.
 
 ## License
 The unique code in this repository is under the MIT license. 

@@ -1,4 +1,4 @@
-// Used for Mags.
+// Used for some Mags.
 // ---- Created with 3Dmigoto v1.3.16 on Fri Mar 05 21:53:44 2021
 
 cbuffer _Globals : register(b0)
