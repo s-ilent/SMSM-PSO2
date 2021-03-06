@@ -1,7 +1,7 @@
 A messy shader modification for Phantasy Star Online 2. 
 
 ## Features
-1. To reduce banding artifacts ingame, colour dithering has been implemented. Note that because many textures in PSO2 are stored in low quality and weren't changed with the engine upgrade, the surfaces of objects and skyboxes will still have visible banding.
+1. To reduce banding artifacts ingame, colour dithering has been implemented. <br>Note that because many textures in PSO2 are stored in low quality and weren't changed with the engine upgrade, the surfaces of objects and skyboxes will still have visible banding.
 2. The emissive strength of some weapon shaders has been increased, allowing them to cast bloom lighting.
 
 ## Usage
@@ -9,7 +9,7 @@ This relies on 3DMigoto to do the hard work.
 1. Download and install 3DMigoto from <https://github.com/bo3b/3Dmigoto/releases>. 
 2. 3DMigoto comes with 3 folders. Extract the contents of the `x64` folder next to `pso2.exe`, so they are in the same place. 
 
-3DMigoto is a shader patching tool. By default, it is configured to let you hunt for shaders. 
+3DMigoto is a shader patching tool. By default, it is configured to let you hunt for shaders. <br>
 If you are not planning on doing modding yourself, disable the features in the included d3dx.ini. I recommend:
 1. Disable `hunting`, `calls`, and `input`.
 2. Enable `cache_shaders`.
